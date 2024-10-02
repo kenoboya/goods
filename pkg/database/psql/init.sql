@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS categories(
+CREATE TABLE IF NOT EXISTS categories (
     category_id SMALLINT GENERATED ALWAYS AS IDENTITY,
     category_name VARCHAR(50) NOT NULL UNIQUE,
     description TEXT NOT NULL,
@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS categories(
     CONSTRAINT pk_categories_category_id PRIMARY KEY (category_id)
 );
 
-CREATE TABLE IF NOT EXISTS suppliers(
+CREATE TABLE IF NOT EXISTS suppliers (
     supplier_id SMALLINT GENERATED ALWAYS AS IDENTITY,
     company_name VARCHAR(70) NOT NULL,
     contact_name VARCHAR(70),
@@ -17,15 +17,15 @@ CREATE TABLE IF NOT EXISTS suppliers(
     CONSTRAINT pk_suppliers_supplier_id PRIMARY KEY (supplier_id)
 );
 
-CREATE TABLE IF NOT EXISTS products(
+CREATE TABLE IF NOT EXISTS products (
     product_id INTEGER GENERATED ALWAYS AS IDENTITY,
     product_name VARCHAR(50) NOT NULL UNIQUE,
     supplier_id SMALLINT NOT NULL,
     category_id SMALLINT NOT NULL,
-    unit_price REAL NOT NULL,
+    unit_price NUMERIC(10, 2) NOT NULL,
     in_stock BOOLEAN NOT NULL DEFAULT TRUE,
-    discount REAL DEFAULT 0.0,
-    quantity_per_init VARCHAR(50),
+    discount NUMERIC(5, 2) DEFAULT 0.0,
+    quantity_per_unit VARCHAR(50),
     weight VARCHAR(10),
     image TEXT,
     CONSTRAINT pk_products_product_id PRIMARY KEY (product_id),
@@ -34,9 +34,9 @@ CREATE TABLE IF NOT EXISTS products(
     CONSTRAINT chk_discount CHECK (discount >= 0)
 );
 
-CREATE TABLE IF NOT EXISTS promocodes(
+CREATE TABLE IF NOT EXISTS promocodes (
     promocode_id VARCHAR(25) NOT NULL UNIQUE,
-    discount REAL DEFAULT 0.0,
+    discount NUMERIC(5, 2) DEFAULT 0.0,
     start_at DATE NOT NULL,
     finish_at DATE NOT NULL,
     pk_promocodes_promocode_id PRIMARY KEY(promocode_id),
@@ -45,7 +45,9 @@ CREATE TABLE IF NOT EXISTS promocodes(
 
 CREATE TABLE IF NOT EXISTS orders (
     order_id BIGINT GENERATED ALWAYS AS IDENTITY,
-    customer_id VARCHAR(24) NOT NULL,
+    customer_id VARCHAR(24),
+    customer_full_name VARCHAR(25) NOT NULL,
+    customer_phone VARCHAR(25) NOT NULL,
     order_date TIMESTAMPTZ DEFAULT NOW(),
     shipper_id VARCHAR(24),
     accepted_at TIMESTAMPTZ,
@@ -61,7 +63,7 @@ CREATE TABLE IF NOT EXISTS orders (
     CONSTRAINT pk_orders_order_id PRIMARY KEY (order_id)
 );
 
-CREATE TABLE IF NOT EXISTS orders_details(
+CREATE TABLE IF NOT EXISTS orders_details (
     order_id BIGINT NOT NULL,
     product_id INTEGER NOT NULL,
     quantity SMALLINT NOT NULL,
@@ -75,7 +77,7 @@ CREATE TABLE IF NOT EXISTS orders_details(
 
 CREATE TABLE IF NOT EXISTS receipts (
     receipt_id BIGINT GENERATED ALWAYS AS IDENTITY,
-    total_amount REAL NOT NULL,
+    total_amount NUMERIC(10, 2) NOT NULL,
     receipt_date TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT pk_receipts_receipt_id PRIMARY KEY (receipt_id)
 );
