@@ -2,23 +2,37 @@ package psql
 
 import (
 	"fmt"
+	logger "goods/pkg/logger/zap"
 
 	"github.com/jmoiron/sqlx"
+	"go.uber.org/zap"
 )
 
 type PSQlConfig struct {
 	Host     string
 	Port     int
 	Username string
-	Name     string `mapstructure:"dbname"`
+	Name     string
 	SSLmode  string
 	Password string
 }
 
-func NewPostgresConnection(inf PSQlConfig) (*sqlx.DB, error) {
-	db, err := sqlx.Connect("postgres", fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s password=%s",
-		inf.Host, inf.Port, inf.Username, inf.Name, inf.SSLmode, inf.Password))
+func (db *PSQlConfig) getDatabaseConnectionString() string {
+	return fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s password=%s",
+		db.Host, db.Port, db.Username, db.Name, db.SSLmode, db.Password)
+}
+
+func NewPostgresConnection(cfg PSQlConfig) (*sqlx.DB, error) {
+	db, err := sqlx.Connect("postgres", cfg.getDatabaseConnectionString())
 	if err != nil {
+		logger.Error("Failed to connect to PostgreSQL with the provided configuration",
+			zap.String("host", cfg.Host),
+			zap.Int("port", cfg.Port),
+			zap.String("user", cfg.Username),
+			zap.String("dbname", cfg.Name),
+			zap.String("sslmode", cfg.SSLmode),
+			zap.Error(err),
+		)
 		return nil, err
 	}
 	return db, nil
