@@ -6,6 +6,7 @@ type Category struct {
 	Description  string  `json:"description" db:"description"`
 	Image        *string `json:"image" db:"image"`
 }
+
 type Product struct {
 	ProductID       int     `json:"product_id" db:"product_id"`
 	ProductName     int     `json:"product_name" db:"product_name"`
@@ -17,4 +18,14 @@ type Product struct {
 	QuantityPerUnit *string `json:"quantity_per_unit" db:"quantity_per_unit"`
 	Weight          *string `json:"weight" db:"weight"`
 	Image           *string `json:"image" db:"image"`
+}
+
+type ProductRequest struct {
+	ProductID int
+	Quantity  int8
+}
+
+type ProductResponse struct {
+	Product  Product
+	Quantity int8
 }

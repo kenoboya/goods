@@ -14,24 +14,40 @@ type DeliveryAddress struct {
 }
 
 type Customer struct {
-	CustomerID       *string `json:"customer_id" db:"customer_id"`
+	UserID           *string `json:"user_id" db:"user_id"`
 	CustomerFullName string  `json:"customer_full_name" db:"customer_full_name"`
 	CustomerPhone    string  `json:"customer_phone" db:"customer_phone"`
 }
 
-type Order struct {
-	OrderID     int64      `json:"order_id" db:"order_id"`
-	OrderDate   *time.Time `json:"order_date" db:"order_date"`
-	ShipperID   *string    `json:"shipper_id" db:"shipper_id"`
-	AcceptedAt  *time.Time `json:"accepted_at" db:"accepted_at"`
-	DeliveredAt *time.Time `json:"delivered_at" db:"delivered_at"`
-	Customer
-	DeliveryAddress
+type OrderBriefInfo struct {
+	OrderID int64 `json:"order_id" db:"order_id"`
 }
 
 type OrderDetails struct {
-	Order     Order     `json:"order"`
-	Product   Product   `json:"product"`
-	Promocode Promocode `json: "promocode"`
-	Quantity  int8      `json:"quantity" db:"quantity"`
+	OrderBriefInfo
+	Products        []ProductResponse `json:"Products"`
+	Customer        Customer          `json:"Customer"`
+	DeliveryAddress DeliveryAddress   `json:"DeliveryAddress"`
+	Promocode       *Promocode        `json:"Promocode"`
+	OrderDate       time.Time         `json:"order_date" db:"order_date"`
+}
+
+type OrderRequest struct {
+	Customer        Customer
+	TransactionID   string
+	Products        []ProductRequest
+	DeliveryAddress DeliveryAddress
+	Promocode       *string
+}
+
+type OrderDatabase struct {
+	TransactionID string
+	ProductID     int
+	Quantity      int8
+}
+
+type OrderDetailsDatabase struct {
+	OrderID           int64
+	ShippingDetailsID int64
+	PromocodeID       *string
 }
