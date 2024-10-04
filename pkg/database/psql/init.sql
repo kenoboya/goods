@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS products (
 CREATE TABLE IF NOT EXISTS baskets (
     customer_id VARCHAR(24) NOT NULL,
     product_id INTEGER NOT NULL,
-    quantity SMALLINT NOT NULL,
+    quantity SMALLINT DEFAULT 1,
     CONSTRAINT pk_baskets_customer_id_product_id PRIMARY KEY (customer_id, product_id)
 );
 
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS orders (
 CREATE TABLE IF NOT EXISTS orders_products (
     order_id BIGINT NOT NULL,
     product_id INTEGER NOT NULL,
-    quantity SMALLINT NOT NULL,
+    quantity NOT NULL,
     CONSTRAINT pk_orders_products_order_id_product_id PRIMARY KEY (order_id, product_id),
     CONSTRAINT chk_quantity CHECK (quantity >= 1)
 );

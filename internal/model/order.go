@@ -42,12 +42,17 @@ type OrderRequest struct {
 
 type OrderDatabase struct {
 	TransactionID string
-	ProductID     int
-	Quantity      int8
+	CustomerID    int
 }
 
 type OrderDetailsDatabase struct {
 	OrderID           int64
 	ShippingDetailsID int64
 	PromocodeID       *string
+}
+
+type OrderProductDatabase struct {
+	OrderID   int64
+	ProductID int
+	Quantity  int8
 }
