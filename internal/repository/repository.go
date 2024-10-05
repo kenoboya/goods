@@ -3,6 +3,8 @@ package repo
 import (
 	"context"
 	"goods/internal/model"
+
+	"github.com/jmoiron/sqlx"
 )
 
 type Repositories struct {
@@ -10,6 +12,23 @@ type Repositories struct {
 	Products   Products
 	Baskets    Baskets
 	Orders     Orders
+	Customers  Customers
+	Suppliers  Suppliers
+	Shipping   Shipping
+	Promocodes Promocodes
+}
+
+func NewRepositories(db *sqlx.DB) *Repositories {
+	return &Repositories{
+		Categories: NewCategoriesRepo(db),
+		Products:   NewProductsRepo(db),
+		Baskets:    NewBasketsRepo(db),
+		Orders:     NewOrdersRepo(db),
+		Customers:  NewCustomersRepo(db),
+		Suppliers:  NewSuppliersRepo(db),
+		Shipping:   NewShippingRepo(db),
+		Promocodes: NewPromocodesRepo(db),
+	}
 }
 
 type Categories interface {
@@ -34,4 +53,21 @@ type Orders interface {
 	CreateOrderDetails(ctx context.Context, order model.OrderDetailsDatabase) error
 	CreateOrderProducts(ctx context.Context, order model.OrderProductDatabase) error
 	// GetOrdersDetailsByCustomerID(ctx context.Context, customerID string) ([]model.OrderDetails, error)
+}
+
+type Customers interface {
+	CreateCustomer(ctx context.Context, customer model.Customer) (int64, error)
+	GetCustomerByID(ctx context.Context, customerID int64) (model.Customer, error)
+}
+
+type Suppliers interface {
+	CreateSupplier(ctx context.Context, supplier model.Supplier) error
+}
+
+type Shipping interface {
+	CreateShippingDetails(ctx context.Context, shippingDetails model.DeliveryAddress) (int64, error)
+}
+
+type Promocodes interface {
+	GetPromocodeByID(ctx context.Context, promocodeID string) (model.Promocode, error)
 }

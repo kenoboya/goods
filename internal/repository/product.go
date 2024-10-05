@@ -23,6 +23,7 @@ func (r *ProductsRepo) GetProducts(ctx context.Context) ([]model.Product, error)
 	}
 	return products, nil
 }
+
 func (r *ProductsRepo) GetProductsByCategoryID(ctx context.Context, categoryID int8) ([]model.Product, error) {
 	var products []model.Product
 	query := "SELECT * FROM products WHERE category_id = $1"
@@ -31,6 +32,7 @@ func (r *ProductsRepo) GetProductsByCategoryID(ctx context.Context, categoryID i
 	}
 	return products, nil
 }
+
 func (r *ProductsRepo) GetProductByID(ctx context.Context, productID int) (model.Product, error) {
 	var product model.Product
 	query := "SELECT * FROM products WHERE product_id = $1"

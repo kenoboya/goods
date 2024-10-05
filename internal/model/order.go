@@ -42,7 +42,7 @@ type OrderRequest struct {
 
 type OrderDatabase struct {
 	TransactionID string
-	CustomerID    int
+	CustomerID    int64
 }
 
 type OrderDetailsDatabase struct {

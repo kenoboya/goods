@@ -27,7 +27,7 @@ func (r *CategoriesRepo) GetCategories(ctx context.Context) ([]model.Category, e
 func (r *CategoriesRepo) GetCategoryByID(ctx context.Context, categoryID int8) (model.Category, error) {
 	var category model.Category
 	query := "SELECT * FROM categories WHERE category_id = $1"
-	if err := r.db.Get(&category, query, categoryID); err != nil {
+	if err := r.db.GetContext(ctx, &category, query, categoryID); err != nil {
 		return model.Category{}, err
 	}
 	return category, nil
