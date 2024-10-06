@@ -1,6 +1,7 @@
 package config
 
 import (
+	"goods/internal/model"
 	"goods/pkg/database/psql"
 	logger "goods/pkg/logger/zap"
 	"time"
@@ -66,11 +67,11 @@ func unmarshal(config *Config) error {
 
 func loadFromEnv(cfg *Config, envDIR string) error {
 	if err := gotenv.Load(envDIR); err != nil {
-		logger.Error("Failed to load environment file",
+		logger.Error(
 			zap.String("file", ".env"),
-			zap.Error(err),
+			zap.Error(model.ErrNotFoundEnvFile),
 		)
-		return err
+		return model.ErrNotFoundEnvFile
 	}
 
 	if err := envconfig.Process("DB", &cfg.PSQL); err != nil {
@@ -86,21 +87,21 @@ func loadFromEnv(cfg *Config, envDIR string) error {
 }
 
 func loadViperConfig(path string) error {
-	viper.SetConfigFile("server")
+	viper.SetConfigName("server")
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath(path)
 
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			logger.Error("Failed to find config file",
+			logger.Error(
 				zap.String("file", "server.yaml"),
 				zap.String("path", path),
-				zap.Error(err),
+				zap.Error(model.ErrNotFoundConfigFile),
 			)
-			return err
+			return model.ErrNotFoundConfigFile
 		} else {
 			return err
 		}
 	}
-	return nil
+	return viper.MergeInConfig()
 }

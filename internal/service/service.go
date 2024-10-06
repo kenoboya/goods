@@ -6,15 +6,17 @@ import (
 	repo "goods/internal/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mocks/mock.go
+
 type Services struct {
 	Categories Categories
 	Products   Products
 	Baskets    Baskets
 	Orders     Orders
-	Customers  Customers
-	Suppliers  Suppliers
-	Shipping   Shipping
-	Promocodes Promocodes
+	// Customers  Customers
+	// Suppliers  Suppliers
+	// Shipping   Shipping
+	// Promocodes Promocodes
 }
 
 func NewServices(repositories *repo.Repositories) *Services {
