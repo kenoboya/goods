@@ -9,7 +9,7 @@ type Category struct {
 
 type Product struct {
 	ProductID       int     `json:"product_id" db:"product_id"`
-	ProductName     int     `json:"product_name" db:"product_name"`
+	ProductName     string  `json:"product_name" db:"product_name"`
 	SupplierID      int8    `json:"supplier_id" db:"supplier_id"`
 	CategoryID      int8    `json:"category_id" db:"category_id"`
 	UnitPrice       float64 `json:"unit_price" db:"unit_price"`
@@ -28,4 +28,9 @@ type ProductRequest struct {
 type ProductResponse struct {
 	Product  Product
 	Quantity int8
+}
+
+type Goods struct {
+	Category Category  `json:"Category"`
+	Products []Product `json:"Products"`
 }

@@ -1,4 +1,4 @@
-package http
+package http_server
 
 import (
 	"context"
@@ -10,12 +10,12 @@ import (
 	"go.uber.org/zap"
 )
 
-type Server struct {
+type server struct {
 	srv *http.Server
 }
 
-func NewServer(config config.HttpConfig, handler *rest.Handler) *Server {
-	return &Server{
+func NewServer(config config.HttpConfig, handler *rest.Handler) *server {
+	return &server{
 		srv: &http.Server{
 			Addr:           config.Addr,
 			ReadTimeout:    config.ReadTimeout,
@@ -26,7 +26,7 @@ func NewServer(config config.HttpConfig, handler *rest.Handler) *Server {
 	}
 }
 
-func (s *Server) Run() error {
+func (s *server) Run() error {
 	if err := s.srv.ListenAndServe(); err != nil {
 		logger.Error("Failed to run server",
 			zap.String("server", "http"),
@@ -37,7 +37,7 @@ func (s *Server) Run() error {
 	return nil
 }
 
-func (s *Server) Shutdown(ctx context.Context) error {
+func (s *server) Shutdown(ctx context.Context) error {
 	if err := s.srv.Shutdown(ctx); err != nil {
 		logger.Error("Failed to shutdown server",
 			zap.String("server", "http"),

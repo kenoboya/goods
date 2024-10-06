@@ -1,4 +1,4 @@
-package grpc
+package grpc_server
 
 import (
 	"fmt"
@@ -8,26 +8,26 @@ import (
 	"google.golang.org/grpc"
 )
 
-type Server struct {
+type server struct {
 	srv *grpc.Server
 }
 
-func NewServer() *Server{
-	return &Server{
+func NewServer() *server {
+	return &server{
 		srv: grpc.NewServer(),
 	}
 }
 
-func (s *Server) ListenAndServe(port int) error{
-	addr:= fmt.Sprintf(":%d", port)
+func (s *server) ListenAndServe(port int) error {
+	addr := fmt.Sprintf(":%d", port)
 
-	lis, err:= net.Listen("tcp", addr)
-	if err != nil{
+	lis, err := net.Listen("tcp", addr)
+	if err != nil {
 		log.Fatalf("Failed to listen on port %s : %v", addr, err)
 		return err
 	}
-	
-	if err:= s.srv.Serve(lis); err != nil{
+
+	if err := s.srv.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve gRPC server over port %s : %v", addr, err)
 	}
 

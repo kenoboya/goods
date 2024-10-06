@@ -25,3 +25,6 @@ func (s *ProductsService) GetProductsByCategoryID(ctx context.Context, categoryI
 func (s *ProductsService) GetProductsByID(ctx context.Context, productID int) (model.Product, error) {
 	return s.productsRepo.GetProductByID(ctx, productID)
 }
+func (s *ProductsService) GetProductByName(ctx context.Context, productName string) (model.Product, error) {
+	return s.productsRepo.GetProductByName(ctx, productName)
+}

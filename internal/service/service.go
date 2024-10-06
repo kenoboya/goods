@@ -17,7 +17,7 @@ type Services struct {
 	Promocodes Promocodes
 }
 
-func NewServices(repositories repo.Repositories) *Services {
+func NewServices(repositories *repo.Repositories) *Services {
 	return &Services{
 		Categories: NewCategoriesService(repositories.Categories),
 		Products:   NewProductsService(repositories.Products),
@@ -32,12 +32,14 @@ func NewServices(repositories repo.Repositories) *Services {
 type Categories interface {
 	GetCategories(ctx context.Context) ([]model.Category, error)
 	GetCategoryByID(ctx context.Context, categoryID int8) (model.Category, error)
+	GetCategoryByName(ctx context.Context, categoryName string) (model.Category, error)
 }
 
 type Products interface {
 	GetProducts(ctx context.Context) ([]model.Product, error)
 	GetProductsByCategoryID(ctx context.Context, categoryID int8) ([]model.Product, error)
 	GetProductsByID(ctx context.Context, productID int) (model.Product, error)
+	GetProductByName(ctx context.Context, productName string) (model.Product, error)
 }
 
 type Baskets interface {

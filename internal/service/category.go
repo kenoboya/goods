@@ -21,3 +21,7 @@ func (s *CategoriesService) GetCategories(ctx context.Context) ([]model.Category
 func (s *CategoriesService) GetCategoryByID(ctx context.Context, categoryID int8) (model.Category, error) {
 	return s.categoriesRepo.GetCategoryByID(ctx, categoryID)
 }
+
+func (s *CategoriesService) GetCategoryByName(ctx context.Context, categoryName string) (model.Category, error) {
+	return s.categoriesRepo.GetCategoryByName(ctx, categoryName)
+}

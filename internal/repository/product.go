@@ -33,10 +33,28 @@ func (r *ProductsRepo) GetProductsByCategoryID(ctx context.Context, categoryID i
 	return products, nil
 }
 
+func (r *ProductsRepo) GetProductsByCategory(ctx context.Context, categoryID int8) ([]model.Product, error) {
+	var products []model.Product
+	query := "SELECT * FROM products WHERE category_id = $1"
+	if err := r.db.Select(&products, query, categoryID); err != nil {
+		return []model.Product{}, err
+	}
+	return products, nil
+}
+
 func (r *ProductsRepo) GetProductByID(ctx context.Context, productID int) (model.Product, error) {
 	var product model.Product
 	query := "SELECT * FROM products WHERE product_id = $1"
 	if err := r.db.Get(&product, query, productID); err != nil {
+		return model.Product{}, err
+	}
+	return product, nil
+}
+
+func (r *ProductsRepo) GetProductByName(ctx context.Context, productName string) (model.Product, error) {
+	var product model.Product
+	query := "SELECT * FROM products WHERE product_name = $1"
+	if err := r.db.Get(&product, query, productName); err != nil {
 		return model.Product{}, err
 	}
 	return product, nil

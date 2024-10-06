@@ -7,16 +7,17 @@ import (
 )
 
 type Handler struct {
-	services service.Services
+	services *service.Services
 }
 
-func NewHandler(services service.Services) *Handler {
+func NewHandler(services *service.Services) *Handler {
 	return &Handler{services: services}
 }
 
 func (h *Handler) Init(router *gin.RouterGroup) {
 	v1 := router.Group("/v1")
 	{
-
+		h.InitCategoriesRoutes(v1)
+		h.InitProductsRoutes(v1)
 	}
 }

@@ -34,12 +34,14 @@ func NewRepositories(db *sqlx.DB) *Repositories {
 type Categories interface {
 	GetCategories(ctx context.Context) ([]model.Category, error)
 	GetCategoryByID(ctx context.Context, categoryID int8) (model.Category, error)
+	GetCategoryByName(ctx context.Context, categoryName string) (model.Category, error)
 }
 
 type Products interface {
 	GetProducts(ctx context.Context) ([]model.Product, error)
 	GetProductsByCategoryID(ctx context.Context, categoryID int8) ([]model.Product, error)
 	GetProductByID(ctx context.Context, productID int) (model.Product, error)
+	GetProductByName(ctx context.Context, productName string) (model.Product, error)
 }
 
 type Baskets interface {
