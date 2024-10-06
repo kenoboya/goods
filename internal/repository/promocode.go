@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"goods/internal/model"
 
 	"github.com/jmoiron/sqlx"
@@ -19,6 +20,9 @@ func (r *PromocodesRepo) GetPromocodeByID(ctx context.Context, promocodeID strin
 	var promocode model.Promocode
 	query := "SELECT * FROM promocodes WHERE promocode_id = $1"
 	if err := r.db.GetContext(ctx, &promocode, query, promocodeID); err != nil {
+		if err == sql.ErrNoRows {
+			return model.Promocode{}, model.ErrNotFoundPromocode
+		}
 		return model.Promocode{}, err
 	}
 	return promocode, nil

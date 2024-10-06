@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"goods/internal/model"
 
 	"github.com/jmoiron/sqlx"
@@ -28,6 +29,9 @@ func (r *CustomersRepo) GetCustomerByID(ctx context.Context, customerID int64) (
 	var customer model.Customer
 	query := "SELECT * FROM customers WHERE customer_id = $1"
 	if err := r.db.Get(&customer, query, customerID); err != nil {
+		if err == sql.ErrNoRows {
+			return model.Customer{}, model.ErrNotFoundCustomer
+		}
 		return model.Customer{}, err
 	}
 	return customer, nil

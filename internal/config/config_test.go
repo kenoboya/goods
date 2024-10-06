@@ -13,24 +13,28 @@ import (
 func TestInit(t *testing.T) {
 	logger.InitLogger()
 	tests := []struct {
+		name      string
 		configDIR string
 		envDIR    string
 		expected  *Config
 		err       error
 	}{
 		{
+			name:      "ok",
 			configDIR: "./fixturess",
 			envDIR:    "./fixtures/.env",
 			expected:  &Config{},
 			err:       model.ErrNotFoundConfigFile,
 		},
 		{
+			name:      "invalid path to configuration file",
 			configDIR: "./fixtures",
 			envDIR:    "./fixturess/.env",
 			expected:  &Config{},
 			err:       model.ErrNotFoundEnvFile,
 		},
 		{
+			name:      "invalid path to env file",
 			configDIR: "./fixtures",
 			envDIR:    "./fixtures/.env",
 			expected: &Config{
@@ -55,7 +59,7 @@ func TestInit(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		t.Run(test.configDIR, func(t *testing.T) {
+		t.Run(test.name, func(t *testing.T) {
 			actual, err := Init(test.configDIR, test.envDIR)
 			assert.Equal(t, test.expected, actual)
 			assert.Equal(t, test.err, err)

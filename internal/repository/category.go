@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"goods/internal/model"
 
 	"github.com/jmoiron/sqlx"
@@ -28,6 +29,9 @@ func (r *CategoriesRepo) GetCategoryByID(ctx context.Context, categoryID int8) (
 	var category model.Category
 	query := "SELECT * FROM categories WHERE category_id = $1"
 	if err := r.db.GetContext(ctx, &category, query, categoryID); err != nil {
+		if err == sql.ErrNoRows {
+			return model.Category{}, model.ErrNotFoundCategory
+		}
 		return model.Category{}, err
 	}
 	return category, nil
@@ -37,6 +41,9 @@ func (r *CategoriesRepo) GetCategoryByName(ctx context.Context, categoryName str
 	var category model.Category
 	query := "SELECT * FROM categories WHERE category_name = $1"
 	if err := r.db.GetContext(ctx, &category, query, categoryName); err != nil {
+		if err == sql.ErrNoRows {
+			return model.Category{}, model.ErrNotFoundCategory
+		}
 		return model.Category{}, err
 	}
 	return category, nil

@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"goods/internal/model"
 
 	"github.com/jmoiron/sqlx"
@@ -28,6 +29,9 @@ func (r *ProductsRepo) GetProductsByCategoryID(ctx context.Context, categoryID i
 	var products []model.Product
 	query := "SELECT * FROM products WHERE category_id = $1"
 	if err := r.db.Select(&products, query, categoryID); err != nil {
+		if err == sql.ErrNoRows {
+			return []model.Product{}, model.ErrNotFoundProducts
+		}
 		return []model.Product{}, err
 	}
 	return products, nil
@@ -37,6 +41,9 @@ func (r *ProductsRepo) GetProductsByCategory(ctx context.Context, categoryID int
 	var products []model.Product
 	query := "SELECT * FROM products WHERE category_id = $1"
 	if err := r.db.Select(&products, query, categoryID); err != nil {
+		if err == sql.ErrNoRows {
+			return []model.Product{}, model.ErrNotFoundProducts
+		}
 		return []model.Product{}, err
 	}
 	return products, nil
@@ -46,6 +53,9 @@ func (r *ProductsRepo) GetProductByID(ctx context.Context, productID int) (model
 	var product model.Product
 	query := "SELECT * FROM products WHERE product_id = $1"
 	if err := r.db.Get(&product, query, productID); err != nil {
+		if err == sql.ErrNoRows {
+			return model.Product{}, model.ErrNotFoundProduct
+		}
 		return model.Product{}, err
 	}
 	return product, nil
@@ -55,6 +65,9 @@ func (r *ProductsRepo) GetProductByName(ctx context.Context, productName string)
 	var product model.Product
 	query := "SELECT * FROM products WHERE product_name = $1"
 	if err := r.db.Get(&product, query, productName); err != nil {
+		if err == sql.ErrNoRows {
+			return model.Product{}, model.ErrNotFoundProduct
+		}
 		return model.Product{}, err
 	}
 	return product, nil
