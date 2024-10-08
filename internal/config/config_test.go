@@ -20,26 +20,26 @@ func TestInit(t *testing.T) {
 		err       error
 	}{
 		{
-			name:      "ok",
+			name:      "invalid path to configuration file",
 			configDIR: "./fixturess",
 			envDIR:    "./fixtures/.env",
 			expected:  &Config{},
 			err:       model.ErrNotFoundConfigFile,
 		},
 		{
-			name:      "invalid path to configuration file",
+			name:      "invalid path to env file",
 			configDIR: "./fixtures",
 			envDIR:    "./fixturess/.env",
 			expected:  &Config{},
 			err:       model.ErrNotFoundEnvFile,
 		},
 		{
-			name:      "invalid path to env file",
+			name:      "ok",
 			configDIR: "./fixtures",
 			envDIR:    "./fixtures/.env",
 			expected: &Config{
 				HTTP: HttpConfig{
-					Addr:           ":8080",
+					Addr:           ":9998",
 					ReadTimeout:    10 * time.Second,
 					WriteTimeout:   10 * time.Second,
 					MaxHeaderBytes: 1,
