@@ -34,12 +34,14 @@ func NewRepositories(db *sqlx.DB) *Repositories {
 }
 
 type Categories interface {
+	CreateCategories(ctx context.Context, category model.CreateCategoryRequest) error
 	GetCategories(ctx context.Context) ([]model.Category, error)
 	GetCategoryByID(ctx context.Context, categoryID int8) (model.Category, error)
 	GetCategoryByName(ctx context.Context, categoryName string) (model.Category, error)
 }
 
 type Products interface {
+	CreateProduct(ctx context.Context, product model.CreateProductRequest) error
 	GetProducts(ctx context.Context) ([]model.Product, error)
 	GetProductsByCategoryID(ctx context.Context, categoryID int8) ([]model.Product, error)
 	GetProductByID(ctx context.Context, productID int) (model.Product, error)
@@ -61,6 +63,7 @@ type Orders interface {
 
 type Customers interface {
 	CreateCustomer(ctx context.Context, customer model.Customer) (int64, error)
+	GetCustomers(ctx context.Context) ([]model.Customer, error)
 	GetCustomerByID(ctx context.Context, customerID int64) (model.Customer, error)
 }
 

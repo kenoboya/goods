@@ -16,6 +16,15 @@ func NewCategoriesRepo(db *sqlx.DB) *CategoriesRepo {
 	return &CategoriesRepo{db: db}
 }
 
+func (r *CategoriesRepo) CreateCategories(ctx context.Context, category model.CreateCategoryRequest) error {
+	query := "INSERT INTO categories(category_name, description, image) VALUES(:category_name, :description, :image)"
+	_, err := r.db.NamedExecContext(ctx, query, &category)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *CategoriesRepo) GetCategories(ctx context.Context) ([]model.Category, error) {
 	var categories []model.Category
 	query := "SELECT * FROM categories"

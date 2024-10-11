@@ -14,6 +14,10 @@ func NewCategoriesService(categoriesRepo repo.Categories) *CategoriesService {
 	return &CategoriesService{categoriesRepo: categoriesRepo}
 }
 
+func (s *CategoriesService) CreateCategories(ctx context.Context, category model.CreateCategoryRequest) error {
+	return s.categoriesRepo.CreateCategories(ctx, category)
+}
+
 func (s *CategoriesService) GetCategories(ctx context.Context) ([]model.Category, error) {
 	return s.categoriesRepo.GetCategories(ctx)
 }

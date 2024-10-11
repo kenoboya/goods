@@ -1,14 +1,11 @@
 package model
 
-type Category struct {
-	CategoryID   int8    `json:"category_id" db:"category_id"`
-	CategoryName string  `json:"category_name" db:"category_name"`
-	Description  string  `json:"description" db:"description"`
-	Image        *string `json:"image" db:"image"`
+type Product struct {
+	ProductID int `json:"product_id" db:"product_id"`
+	CreateProductRequest
 }
 
-type Product struct {
-	ProductID       int     `json:"product_id" db:"product_id"`
+type CreateProductRequest struct {
 	ProductName     string  `json:"product_name" db:"product_name"`
 	SupplierID      int8    `json:"supplier_id" db:"supplier_id"`
 	CategoryID      int8    `json:"category_id" db:"category_id"`

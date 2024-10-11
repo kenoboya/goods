@@ -16,6 +16,15 @@ func NewProductsRepo(db *sqlx.DB) *ProductsRepo {
 	return &ProductsRepo{db: db}
 }
 
+func (r *ProductsRepo) CreateProduct(ctx context.Context, product model.CreateProductRequest) error {
+	query := "INSERT INTO products(product_name, supplier_id, category_id, unit_price, stock, discount, quantity_per_unit, weight, image) VALUES(:product_name, :supplier_id, :category_id, :unit_price, :stock, :discount, :quantity_per_unit, :weight, :image)"
+	_, err := r.db.NamedExecContext(ctx, query, &product)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (r *ProductsRepo) GetProducts(ctx context.Context) ([]model.Product, error) {
 	var products []model.Product
 	query := "SELECT * FROM products"

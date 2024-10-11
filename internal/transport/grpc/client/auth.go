@@ -38,9 +38,9 @@ func NewAuthClient(cfg config.GrpcConfig) (*AuthClient, error) {
 	return &AuthClient{conn: conn, client: client}, nil
 }
 
-func (c *AuthClient) Verify(sessionToken string) (*proto.UserResponse, error) {
+func (c *AuthClient) Verify(ctx context.Context, sessionToken string) (*proto.UserResponse, error) {
 	req := &proto.TokenRequest{SessionToken: sessionToken}
-	resp, err := c.client.Verify(context.Background(), req)
+	resp, err := c.client.Verify(ctx, req)
 	if err != nil {
 		if st, ok := status.FromError(err); ok {
 			logger.Error(

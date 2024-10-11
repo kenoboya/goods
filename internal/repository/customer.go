@@ -25,6 +25,15 @@ func (r *CustomersRepo) CreateCustomer(ctx context.Context, customer model.Custo
 	return customerID, nil
 }
 
+func (r *CustomersRepo) GetCustomers(ctx context.Context) ([]model.Customer, error) {
+	var customers []model.Customer
+	query := "SELECT * FROM customers"
+	if err := r.db.Select(&customers, query); err != nil {
+		return []model.Customer{}, err
+	}
+	return customers, nil
+}
+
 func (r *CustomersRepo) GetCustomerByID(ctx context.Context, customerID int64) (model.Customer, error) {
 	var customer model.Customer
 	query := "SELECT * FROM customers WHERE customer_id = $1"
