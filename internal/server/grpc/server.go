@@ -1,35 +1,55 @@
 package grpc_server
 
 import (
-	"fmt"
-	"log"
+	"goods/internal/config"
+	logger "goods/pkg/logger/zap"
 	"net"
 
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
 type server struct {
-	srv *grpc.Server
+	srv     *grpc.Server
+	addr    string
 }
 
-func NewServer() *server {
+func NewServer(config config.GrpcConfig,) *server {
 	return &server{
-		srv: grpc.NewServer(),
+		srv:     grpc.NewServer(),
+		addr:    config.Addr,
 	}
 }
 
-func (s *server) ListenAndServe(port int) error {
-	addr := fmt.Sprintf(":%d", port)
-
-	lis, err := net.Listen("tcp", addr)
+func (s *server) Run() error {
+	lis, err := net.Listen("tcp", s.addr)
 	if err != nil {
-		log.Fatalf("Failed to listen on port %s : %v", addr, err)
+		logger.Error("Failed to listen on TCP",
+			zap.String("server", "grpc"),
+			zap.Error(err),
+		)
 		return err
 	}
 
+	logger.Info("Starting gRPC server",
+		zap.String("address", s.addr),
+	)
+
 	if err := s.srv.Serve(lis); err != nil {
-		log.Fatalf("Failed to serve gRPC server over port %s : %v", addr, err)
+		logger.Error("Failed to serve gRPC server",
+			zap.String("server", "grpc"),
+			zap.String("address", s.addr),
+			zap.Error(err),
+		)
+		return err
 	}
 
 	return nil
+}
+
+func (s *server) Stop() {
+	s.srv.GracefulStop()
+	logger.Info("gRPC server has stopped gracefully",
+		zap.String("server", "grpc"),
+	)
 }

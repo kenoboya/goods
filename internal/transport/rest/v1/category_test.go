@@ -95,7 +95,7 @@ func TestHandler_getCategory(t *testing.T) {
 				Products:   mockProducts,
 				Categories: mockCategories,
 			}
-			handler := NewHandler(services)
+			handler := NewHandler(services, nil)
 
 			r := gin.New()
 			r.GET("/categories/:category", handler.getCategory)

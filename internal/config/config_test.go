@@ -44,7 +44,10 @@ func TestInit(t *testing.T) {
 					WriteTimeout:   10 * time.Second,
 					MaxHeaderBytes: 1,
 				},
-				GRPC: GrpcConfig{},
+				GRPC: GrpcConfig{
+					Addr:     ":99998",
+					AuthAddr: ":99999",
+				},
 				PSQL: psql.PSQlConfig{
 					Host:     "test",
 					Port:     9999,

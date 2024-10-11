@@ -3,3 +3,7 @@ http:
   maxHeaderBytes: 1
   readTimeout: 10s
   writeTimeout: 10s
+
+grpc:
+  port: ":50051"
+  auth_port: ":50052"

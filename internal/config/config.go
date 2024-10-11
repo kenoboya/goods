@@ -26,6 +26,8 @@ type HttpConfig struct {
 }
 
 type GrpcConfig struct {
+	Addr     string `mapstructure:"port"`
+	AuthAddr string `mapstructure:"auth_port"`
 }
 
 func Init(configDIR string, envDIR string) (*Config, error) {

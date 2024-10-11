@@ -2,16 +2,21 @@ package v1
 
 import (
 	"goods/internal/service"
+	grpc_client "goods/internal/transport/grpc/client"
 
 	"github.com/gin-gonic/gin"
 )
 
 type Handler struct {
-	services *service.Services
+	services   *service.Services
+	authClient *grpc_client.AuthClient
 }
 
-func NewHandler(services *service.Services) *Handler {
-	return &Handler{services: services}
+func NewHandler(services *service.Services, authClient *grpc_client.AuthClient) *Handler {
+	return &Handler{
+		services:   services,
+		authClient: authClient,
+	}
 }
 
 func (h *Handler) Init(router *gin.RouterGroup) {

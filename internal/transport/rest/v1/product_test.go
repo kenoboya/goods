@@ -109,7 +109,7 @@ func TestHandler_getProduct(t *testing.T) {
 			test.mockBehavior(mock, test.productName)
 
 			services := &service.Services{Products: mock}
-			handler := NewHandler(services)
+			handler := NewHandler(services, nil)
 
 			r := gin.New()
 
