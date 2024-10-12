@@ -12,4 +12,5 @@ var (
 	ErrNotFoundPromocode  = errors.New("promocode not found")
 	ErrEmptyParam         = errors.New("param is empty")
 	ErrInvalidRole        = errors.New("invalid role")
+	ErrContextIsEmpty     = errors.New("context is empty")
 )

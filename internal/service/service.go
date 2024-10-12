@@ -13,7 +13,7 @@ type Services struct {
 	Products   Products
 	Baskets    Baskets
 	Orders     Orders
-	// Customers  Customers
+	Customers  Customers
 	// Suppliers  Suppliers
 	// Shipping   Shipping
 	// Promocodes Promocodes
@@ -28,6 +28,7 @@ func NewServices(repositories *repo.Repositories) *Services {
 			repositories.Orders,
 			repositories.Customers,
 			repositories.Shipping),
+		Customers: repositories.Customers,
 	}
 }
 
@@ -47,8 +48,9 @@ type Products interface {
 }
 
 type Baskets interface {
-	AddProduct(ctx context.Context, customerID string, productID int) error
-	UpdateProduct(ctx context.Context, customerID string, productID int, quantity int8) error
+	GetProducts(ctx context.Context, customerID string) ([]model.Product, error)
+	AddProduct(ctx context.Context, customerID string, productRequest model.ProductRequest) error
+	UpdateProduct(ctx context.Context, customerID string, productRequest model.ProductRequest) error
 	DeleteProduct(ctx context.Context, customerID string, productID int) error
 }
 
@@ -57,7 +59,6 @@ type Orders interface {
 }
 
 type Customers interface {
-	CreateCustomer(ctx context.Context, customer model.Customer) error
 	GetCustomers(ctx context.Context) ([]model.Customer, error)
 	GetCustomerByID(ctx context.Context, customerID int64) (model.Customer, error)
 }

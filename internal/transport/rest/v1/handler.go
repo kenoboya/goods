@@ -24,5 +24,6 @@ func (h *Handler) Init(router *gin.RouterGroup) {
 	{
 		h.InitCategoriesRoutes(v1)
 		h.InitProductsRoutes(v1)
+		h.InitCustomersRoutes(v1)
 	}
 }

@@ -49,8 +49,9 @@ type Products interface {
 }
 
 type Baskets interface {
-	CreateBasket(ctx context.Context, customerID string, product_id int) error
-	UpdateProductFromBasket(ctx context.Context, customerID string, productID int, quantity int8) error
+	CreateBasket(ctx context.Context, customerID string, productRequest model.ProductRequest) error
+	GetProductsFromBasket(ctx context.Context, customerID string) ([]model.Product, error)
+	UpdateProductFromBasket(ctx context.Context, customerID string, productRequest model.ProductRequest) error
 	DeleteProductFromBasket(ctx context.Context, customerID string, productID int) error
 }
 
