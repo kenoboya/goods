@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"database/sql"
 	"goods/internal/model"
 
 	"github.com/jmoiron/sqlx"
@@ -17,7 +18,7 @@ func NewOrdersRepo(db *sqlx.DB) *OrdersRepo {
 
 func (r *OrdersRepo) CreateOrder(ctx context.Context, order model.OrderDatabase) (int64, error) {
 	var orderID int64
-	query := "INSERT INTO orders (customer_id, transaction_id) VALUES (:customer_id, :transaction_id) RETURNING order_id"
+	query := "INSERT INTO orders (customer_id) VALUES (:customer_id) RETURNING order_id"
 	if err := r.db.QueryRowxContext(ctx, query, &order).Scan(&orderID); err != nil {
 		return -1, err
 	}
@@ -38,4 +39,25 @@ func (r *OrdersRepo) CreateOrderProducts(ctx context.Context, order model.OrderP
 		return err
 	}
 	return nil
+}
+
+func (r *OrdersRepo) UpdateOrderWithTransactionID(ctx context.Context, orderID int64, transactionID string) error {
+	query := "UPDATE ON orders SET transaction_id = $1 WHERE order_id = $2"
+	if _, err := r.db.ExecContext(ctx, query, transactionID, orderID); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (r *OrdersRepo) GetTotalSumOrder(ctx context.Context, orderID int64) (float64, error) {
+	var sum float64
+	// procedure plpgsql
+	query := `SELECT GetTotalSumOrder($1)`
+	if err := r.db.GetContext(ctx, sum, query, orderID); err != nil {
+		if err == sql.ErrNoRows {
+			return -1, model.ErrNotFoundOrder
+		}
+		return -1, err
+	}
+	return sum, nil
 }

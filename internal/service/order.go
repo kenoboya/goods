@@ -24,7 +24,7 @@ func NewOrdersService(ordersRepo repo.Orders,
 	}
 }
 
-func (s *OrdersService) SaveOrder(ctx context.Context, order model.OrderRequest) (int64, error) {
+func (s *OrdersService) CreateOrder(ctx context.Context, order model.OrderRequest) (int64, error) {
 	customerID, err := s.customersRepo.CreateCustomer(ctx, order.Customer)
 	if err != nil {
 		logger.Error("Failed to create customer in the repository",
@@ -39,13 +39,11 @@ func (s *OrdersService) SaveOrder(ctx context.Context, order model.OrderRequest)
 	}
 
 	orderID, err := s.ordersRepo.CreateOrder(ctx, model.OrderDatabase{
-		TransactionID: order.TransactionID,
-		CustomerID:    customerID,
+		CustomerID: customerID,
 	})
 	if err != nil {
 		logger.Error("Failed to create order in the repository",
 			zap.String("action", "CreateOrder()"),
-			zap.String("transaction_id", order.TransactionID),
 			zap.Int64("customer_id", customerID),
 			zap.Error(err),
 		)
@@ -102,4 +100,12 @@ func (s *OrdersService) SaveOrder(ctx context.Context, order model.OrderRequest)
 	}
 	logger.Infof("Order No. %d has been successfully registered.", orderID)
 	return orderID, nil
+}
+
+func (s *OrdersService) LinkTransactionToOrder(ctx context.Context, orderID int64, transactionID string) error {
+	return s.ordersRepo.UpdateOrderWithTransactionID(ctx, orderID, transactionID)
+}
+
+func (s *OrdersService) GetTotalSumOrder(ctx context.Context, orderID int64) (float64, error) {
+	return s.ordersRepo.GetTotalSumOrder(ctx, orderID)
 }

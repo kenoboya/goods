@@ -56,6 +56,9 @@ func TestInit(t *testing.T) {
 					SSLmode:  "disable",
 					Password: "test",
 				},
+				Stripe: StripeConfig{
+					WebhookSecret: "test",
+				},
 			},
 			err: nil,
 		},

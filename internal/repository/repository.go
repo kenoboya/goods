@@ -60,6 +60,8 @@ type Orders interface {
 	CreateOrderDetails(ctx context.Context, order model.OrderDetailsDatabase) error
 	CreateOrderProducts(ctx context.Context, order model.OrderProductDatabase) error
 	// GetOrdersDetailsByCustomerID(ctx context.Context, customerID string) ([]model.OrderDetails, error)
+	UpdateOrderWithTransactionID(ctx context.Context, orderID int64, transactionID string) error
+	GetTotalSumOrder(ctx context.Context, orderID int64) (float64, error)
 }
 
 type Customers interface {

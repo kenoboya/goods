@@ -3,7 +3,7 @@ package grpc_client
 import (
 	"context"
 	"goods/internal/config"
-	"goods/internal/server/grpc/proto"
+	proto "goods/internal/server/grpc/proto/auth"
 	logger "goods/pkg/logger/zap"
 
 	"go.uber.org/zap"

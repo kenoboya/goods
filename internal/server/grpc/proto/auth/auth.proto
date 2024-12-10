@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package proto;
 
-option go_package = "./internal/server/grpc/proto;proto";
+option go_package = "./internal/server/grpc/auth/proto;proto";
 
 message TokenRequest {
     string session_token = 1;  

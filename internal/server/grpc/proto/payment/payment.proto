@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "./internal/server/grpc/payment/proto;proto";
+
+
+message PaymentIntentData {
+    int64 amount = 1;
+    string currency = 2;  
+    string payment_method = 3;
+    bool confirm = 4;
+}
+
+message PaymentResponse {
+    string transaction_id = 1;
+}
+
+service PaymentService {
+    rpc CreatePaymentIntent(PaymentIntentData) returns (PaymentResponse);
+}
+

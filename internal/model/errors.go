@@ -10,6 +10,7 @@ var (
 	ErrNotFoundProduct    = errors.New("product not found")
 	ErrNotFoundCustomer   = errors.New("customer not found")
 	ErrNotFoundPromocode  = errors.New("promocode not found")
+	ErrNotFoundOrder      = errors.New("order not found")
 	ErrEmptyParam         = errors.New("param is empty")
 	ErrInvalidRole        = errors.New("invalid role")
 	ErrContextIsEmpty     = errors.New("context is empty")

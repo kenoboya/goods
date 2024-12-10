@@ -25,5 +25,7 @@ func (h *Handler) Init(router *gin.RouterGroup) {
 		h.InitCategoriesRoutes(v1)
 		h.InitProductsRoutes(v1)
 		h.InitCustomersRoutes(v1)
+		h.InitBasketsRoutes(v1)
+		h.InitOrdersRoutes(v1)
 	}
 }

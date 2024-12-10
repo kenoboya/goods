@@ -58,10 +58,15 @@ CREATE TABLE IF NOT EXISTS customers (
     CONSTRAINT pk_customers_customer_id PRIMARY KEY(customer_id)
 );
 
+CREATE TYPE pay_method AS ENUM ('card', 'cash');
+CREATE TYPE pay_status AS ENUM ('pending','paid');
+
 CREATE TABLE IF NOT EXISTS orders (
     order_id BIGINT GENERATED ALWAYS AS IDENTITY,
     customer_id BIGINT NOT NULL,
-    transaction_id VARCHAR(255) NOT NULL UNIQUE,
+    transaction_id VARCHAR(255) DEFAULT NULL,
+    payment_method pay_method DEFAULT 'card',
+    payment_status pay_status DEFAULT 'pending',
     order_date TIMESTAMPTZ DEFAULT NOW(),
     CONSTRAINT pk_orders_order_id PRIMARY KEY (order_id),
     CONSTRAINT fk_orders_customer_id FOREIGN KEY(customer_id) REFERENCES customers(customer_id)
@@ -108,3 +113,31 @@ CREATE TABLE IF NOT EXISTS orders_details (
     CONSTRAINT fk_orders_details_shipping_details_id FOREIGN KEY(shipping_details_id) REFERENCES shipping_details(shipping_details_id),
     CONSTRAINT fk_order_details_promocode_id FOREIGN KEY(promocode_id) REFERENCES promocodes(promocode_id)
 );
+
+CREATE OR REPLACE FUNCTION GetTotalSumOrder(ord_id BIGINT) 
+RETURNS NUMERIC AS
+$$
+DECLARE
+    promocode_id BIGINT;
+    total_with_discount NUMERIC;
+BEGIN
+    SELECT promocode_id INTO promocode_id FROM orders_details WHERE order_id = ord_id LIMIT 1;
+    
+    IF promocode_id IS NULL THEN
+        SELECT SUM(p.unit_price * op.quantity * (1 - p.discount)) 
+        INTO total_with_discount
+        FROM orders_product AS op
+        JOIN products p ON op.product_id = p.product_id
+        WHERE op.order_id = ord_id;
+    ELSE
+        SELECT SUM(p.unit_price * op.quantity * (1 - od.discount)) 
+        INTO total_with_discount
+        FROM orders_product AS op
+        JOIN products p ON op.product_id = p.product_id
+        JOIN orders_details od ON op.order_id = od.order_id
+        WHERE op.order_id = ord_id;
+    END IF;
+    
+    RETURN total_with_discount;
+END;
+$$;

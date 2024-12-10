@@ -13,9 +13,10 @@ import (
 )
 
 type Config struct {
-	HTTP HttpConfig
-	GRPC GrpcConfig
-	PSQL psql.PSQlConfig
+	HTTP   HttpConfig
+	GRPC   GrpcConfig
+	PSQL   psql.PSQlConfig
+	Stripe StripeConfig
 }
 
 type HttpConfig struct {
@@ -28,6 +29,10 @@ type HttpConfig struct {
 type GrpcConfig struct {
 	Addr     string `mapstructure:"port"`
 	AuthAddr string `mapstructure:"auth_port"`
+}
+
+type StripeConfig struct {
+	WebhookSecret string
 }
 
 func Init(configDIR string, envDIR string) (*Config, error) {
@@ -79,6 +84,15 @@ func loadFromEnv(cfg *Config, envDIR string) error {
 	if err := envconfig.Process("DB", &cfg.PSQL); err != nil {
 		logger.Error("Failed to unmarshal environment file",
 			zap.String("prefix", "DB"),
+			zap.String("file", ".env"),
+			zap.Error(err),
+		)
+		return err
+	}
+
+	if err := envconfig.Process("STRIPE", &cfg.Stripe); err != nil {
+		logger.Error("Failed to unmarshal environment file",
+			zap.String("prefix", "STRIPE"),
 			zap.String("file", ".env"),
 			zap.Error(err),
 		)

@@ -55,7 +55,9 @@ type Baskets interface {
 }
 
 type Orders interface {
-	SaveOrder(ctx context.Context, order model.OrderRequest) (int64, error)
+	CreateOrder(ctx context.Context, order model.OrderRequest) (int64, error)
+	GetTotalSumOrder(ctx context.Context, orderID int64) (float64, error)
+	LinkTransactionToOrder(ctx context.Context, orderID int64, transactionID string) error
 }
 
 type Customers interface {
