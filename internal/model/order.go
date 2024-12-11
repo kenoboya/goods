@@ -24,12 +24,14 @@ type OrderRequest struct {
 	Customer        Customer
 	Products        []ProductRequest
 	DeliveryAddress DeliveryAddress
-	Promocode       *string
 	PaymentMethod   string
+	PaymentToken    *string
+	Promocode       *string
 }
 
 type OrderDatabase struct {
-	CustomerID int64
+	CustomerID    int64
+	PaymentMethod string
 }
 
 type OrderDetailsDatabase struct {

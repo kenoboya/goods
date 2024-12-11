@@ -14,4 +14,6 @@ var (
 	ErrEmptyParam         = errors.New("param is empty")
 	ErrInvalidRole        = errors.New("invalid role")
 	ErrContextIsEmpty     = errors.New("context is empty")
+	ErrUserDataIsEmpty    = errors.New("user data is empty")
+	ErrPaymentDataIsEmpty = errors.New("payment data is empty")
 )

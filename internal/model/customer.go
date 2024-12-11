@@ -8,7 +8,7 @@ type Customer struct {
 }
 
 type RequestCustomer struct {
-	UserID           *string `json:"user_id" db:"user_id"`
-	CustomerFullName string  `json:"customer_full_name" db:"customer_full_name"`
-	CustomerPhone    string  `json:"customer_phone" db:"customer_phone"`
+	CustomerFullName string
+	CustomerEmail    string
+	CustomerPhone    string
 }

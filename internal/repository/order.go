@@ -18,7 +18,7 @@ func NewOrdersRepo(db *sqlx.DB) *OrdersRepo {
 
 func (r *OrdersRepo) CreateOrder(ctx context.Context, order model.OrderDatabase) (int64, error) {
 	var orderID int64
-	query := "INSERT INTO orders (customer_id) VALUES (:customer_id) RETURNING order_id"
+	query := "INSERT INTO orders (customer_id, payment_method) VALUES (:customer_id, :payment_method) RETURNING order_id"
 	if err := r.db.QueryRowxContext(ctx, query, &order).Scan(&orderID); err != nil {
 		return -1, err
 	}

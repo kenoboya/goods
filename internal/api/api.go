@@ -50,9 +50,19 @@ func Run(configDIR string, envDIR string) {
 		)
 	}
 
+	paymentClient, err := grpc_client.NewPaymentClient(cfg.GRPC)
+	if err != nil {
+		logger.Fatal("Failed to create payment client",
+			zap.Error(err),
+			zap.String("context", "Initializing application"),
+			zap.String("version", "1.0.0"),
+			zap.String("environment", "development"),
+		)
+	}
+
 	repositories := repo.NewRepositories(db)
 	services := service.NewServices(repositories)
-	handler := rest.NewHandler(services, authClient)
+	handler := rest.NewHandler(services, authClient, paymentClient)
 
 	// HTTP
 	httpServer := http_server.NewServer(cfg.HTTP, handler)

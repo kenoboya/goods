@@ -13,6 +13,17 @@ message UserResponse {
     string role = 2;
 }
 
+message UserInformationRequest {
+    string user_id = 1;
+}
+
+message UserInformationResponse {
+    string fullname = 1;
+    string email = 2;
+    string phone = 3;
+}
+
 service AuthService {
     rpc Verify(TokenRequest) returns (UserResponse);
+    rpc GetUserInformation(UserInformationRequest) returns(UserInformationResponse);
 }

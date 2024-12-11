@@ -10,12 +10,14 @@ import (
 type Handler struct {
 	services   *service.Services
 	authClient *grpc_client.AuthClient
+	paymentClient *grpc_client.PaymentClient
 }
 
-func NewHandler(services *service.Services, authClient *grpc_client.AuthClient) *Handler {
+func NewHandler(services *service.Services, authClient *grpc_client.AuthClient, paymentClient *grpc_client.PaymentClient) *Handler {
 	return &Handler{
-		services:   services,
-		authClient: authClient,
+		services:      services,
+		authClient:    authClient,
+		paymentClient: paymentClient,
 	}
 }
 

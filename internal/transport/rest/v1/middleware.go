@@ -2,7 +2,7 @@ package v1
 
 import (
 	"goods/internal/model"
-	"goods/internal/server/grpc/proto"
+	proto "goods/internal/server/grpc/proto/auth"
 	grpc_client "goods/internal/transport/grpc/client"
 	logger "goods/pkg/logger/zap"
 	"net/http"
@@ -92,6 +92,29 @@ func (h *Handler) AuthAdminMiddleware(client *grpc_client.AuthClient) gin.Handle
 	}
 }
 
+func (h *Handler) OrderMiddleware(client *grpc_client.AuthClient) gin.HandlerFunc {
+	return func(c *gin.Context) {
+		grpcResponse, err := h.middleware(c, client)
+		if err != nil {
+			c.Set("userID", "guest")
+			c.Next()
+			return
+		}
+		c.Set("userID", grpcResponse.UserId)
+		grpcResponseData, err := client.GetUserInformation(c.Request.Context(), grpcResponse.UserId)
+		if err != nil {
+			c.Set("userID", "guest")
+			c.Next()
+			return
+		}
+		c.Set("userID", grpcResponse.UserId)
+		c.Set("fullname", grpcResponseData.Fullname)
+		c.Set("email", grpcResponseData.Email)
+		c.Set("phone", grpcResponseData.Phone)
+		c.Next()
+	}
+}
+
 func (h *Handler) middleware(c *gin.Context, client *grpc_client.AuthClient) (*proto.UserResponse, error) {
 	token, err := c.Cookie("session")
 	if err != nil {
@@ -105,8 +128,6 @@ func (h *Handler) middleware(c *gin.Context, client *grpc_client.AuthClient) (*p
 			c.Abort()
 			return nil, err
 		}
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Unauthorized"})
-		c.Abort()
 		return nil, err
 	}
 
@@ -117,8 +138,6 @@ func (h *Handler) middleware(c *gin.Context, client *grpc_client.AuthClient) (*p
 			zap.Int("status code", http.StatusUnauthorized),
 			zap.Error(err),
 		)
-		c.JSON(http.StatusUnauthorized, gin.H{"message": "Invalid session"})
-		c.Abort()
 		return nil, err
 	}
 	return grpcResponse, nil

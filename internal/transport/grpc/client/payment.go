@@ -1,11 +1,10 @@
 package grpc_client
 
-package grpc_client
-
 import (
 	"context"
 	"goods/internal/config"
-	"goods/internal/server/grpc/proto"
+	"goods/internal/model"
+	proto "goods/internal/server/grpc/proto/payment"
 	logger "goods/pkg/logger/zap"
 
 	"go.uber.org/zap"
@@ -15,7 +14,7 @@ import (
 
 type PaymentClient struct {
 	conn   *grpc.ClientConn
-	client proto.AuthServiceClient
+	client proto.PaymentServiceClient
 }
 
 func NewPaymentClient(cfg config.GrpcConfig) (*PaymentClient, error) {
@@ -36,7 +35,7 @@ func NewPaymentClient(cfg config.GrpcConfig) (*PaymentClient, error) {
 		)
 		return nil, err
 	}
-	// client := proto.NewAuthServiceClient(conn)
+	client := proto.NewPaymentServiceClient(conn)
 	return &PaymentClient{conn: conn, client: client}, nil
 }
 
@@ -46,7 +45,41 @@ func (c *PaymentClient) Close() {
 	}
 }
 
+func (c *PaymentClient) ProcessPayment(ctx context.Context, userData model.UserData, orderID int64, amount float64, stripeToken string) (*proto.PaymentResponse, error) {
+	paymentIntent := &proto.PaymentIntentData{
+		Amount:        int64(amount * 100),
+		Currency:      "UAH",
+		PaymentMethod: stripeToken,
+		Confirm:       true,
+		OrderId:       orderID,
+	}
 
-func (c *PaymentClient) ProcessPayment(orderID int64, amount float64) (error){
+	customer := &proto.CustomerData{
+		Name:  userData.Fullname,
+		Email: userData.Email,
+		Phone: userData.Phone,
+	}
 
+	req := &proto.CreatePaymentIntentRequest{
+		PaymentIntent: paymentIntent,
+		Customer:      customer,
+	}
+	resp, err := c.client.CreatePaymentIntent(ctx, req)
+	if err != nil {
+		if st, ok := status.FromError(err); ok {
+			logger.Error(
+				zap.String("server", "grpc"),
+				zap.String("action", "createPaymentIntent()"),
+				zap.String("response", st.Err().Error()),
+			)
+			return nil, st.Err()
+		}
+		logger.Error(
+			zap.String("server", "grpc"),
+			zap.String("action", "createPaymentIntent()"),
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	return resp, nil
 }

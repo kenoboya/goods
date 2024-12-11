@@ -39,7 +39,8 @@ func (s *OrdersService) CreateOrder(ctx context.Context, order model.OrderReques
 	}
 
 	orderID, err := s.ordersRepo.CreateOrder(ctx, model.OrderDatabase{
-		CustomerID: customerID,
+		CustomerID:    customerID,
+		PaymentMethod: order.PaymentMethod,
 	})
 	if err != nil {
 		logger.Error("Failed to create order in the repository",

@@ -5,3 +5,9 @@ const (
 	RoleCustomer = "customer"
 	RoleShipper  = "shipper"
 )
+
+type UserData struct {
+	Fullname string
+	Email    string
+	Phone    string
+}

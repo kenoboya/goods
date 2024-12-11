@@ -4,12 +4,23 @@ package proto;
 
 option go_package = "./internal/server/grpc/payment/proto;proto";
 
-
 message PaymentIntentData {
     int64 amount = 1;
     string currency = 2;  
     string payment_method = 3;
     bool confirm = 4;
+    int64 order_id = 5;
+}
+
+message CustomerData {
+    string name = 1;   
+    string email = 2;      
+    string phone = 3;        
+}
+
+message PaymentRequest {
+    PaymentIntentData payment_intent = 1;
+    CustomerData customer = 2;
 }
 
 message PaymentResponse {
@@ -17,6 +28,6 @@ message PaymentResponse {
 }
 
 service PaymentService {
-    rpc CreatePaymentIntent(PaymentIntentData) returns (PaymentResponse);
+    rpc CreatePaymentIntent(PaymentRequest) returns (PaymentResponse);
 }
 

@@ -24,7 +24,6 @@ func NewAuthClient(cfg config.GrpcConfig) (*AuthClient, error) {
 	// 	return nil, err
 	// }
 	// opts = append(opts, grpc.WithTransportCredentials(creds))
-
 	conn, err := grpc.NewClient(cfg.AuthAddr, opts...)
 	if err != nil {
 		logger.Error("Failed to create auth client",
@@ -38,6 +37,27 @@ func NewAuthClient(cfg config.GrpcConfig) (*AuthClient, error) {
 	return &AuthClient{conn: conn, client: client}, nil
 }
 
+func (c *AuthClient) GetUserInformation(ctx context.Context, userID string) (*proto.UserInformationResponse, error) {
+	req := &proto.UserInformationRequest{UserId: userID}
+	resp, err := c.client.GetUserInformation(ctx, req)
+	if err != nil {
+		if st, ok := status.FromError(err); ok {
+			logger.Error(
+				zap.String("server", "grpc"),
+				zap.String("action", "GetUserInformation"),
+				zap.String("response", st.Err().Error()),
+			)
+			return nil, st.Err()
+		}
+		logger.Error(
+			zap.String("server", "grpc"),
+			zap.String("action", "GetUserInformation"),
+			zap.Error(err),
+		)
+		return nil, err
+	}
+	return resp, nil
+}
 func (c *AuthClient) Verify(ctx context.Context, sessionToken string) (*proto.UserResponse, error) {
 	req := &proto.TokenRequest{SessionToken: sessionToken}
 	resp, err := c.client.Verify(ctx, req)
@@ -45,12 +65,14 @@ func (c *AuthClient) Verify(ctx context.Context, sessionToken string) (*proto.Us
 		if st, ok := status.FromError(err); ok {
 			logger.Error(
 				zap.String("server", "grpc"),
+				zap.String("action", "verify()"),
 				zap.String("response", st.Err().Error()),
 			)
 			return nil, st.Err()
 		}
 		logger.Error(
 			zap.String("server", "grpc"),
+			zap.String("action", "verify()"),
 			zap.Error(err),
 		)
 		return nil, err
